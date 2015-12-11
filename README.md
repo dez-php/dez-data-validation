@@ -1,2 +1,2 @@
-# dez-data-validator
-Data Validator Component
+# dez-data-validation
+#### Data Validation Component
