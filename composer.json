@@ -1,0 +1,23 @@
+{
+  "name": "dez-php/dez-validation",
+  "description": "Data Validation",
+  "keywords": ["validation","php validation","data validation","dez-validation"],
+  "authors": [
+    {
+      "name": "Ivan Gontarenko",
+      "email": "vania.gontarenko@gmail.com"
+    }
+  ],
+  "license": "MIT",
+  "type": "library",
+  "minimum-stability": "dev",
+  "prefer-stable" : true,
+  "require": {
+    "php": ">=5.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Dez\\Validation\\": "src/Validation"
+    }
+  }
+}
