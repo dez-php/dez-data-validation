@@ -19,26 +19,46 @@
             $this->setData($data);
         }
 
-        public function validate(array $keys = [])
+        /**
+         * @return $this
+         */
+        public function validate()
         {
-            $data   = count($keys) > 0 ? array_diff($this->data, array_flip($keys)) : $this->data;
+            foreach($this->getRules() as $rules) {
+                $this->validateRecursive($rules);
+            }
 
-            foreach($this->getRules() as $field => $rules) {
-                foreach($rules as $rule) {
-                    if(! $rule->validate($field, $data[$field])) {
-                        $this->setMessage($rule->getMessage());
-                    } else {
-                        while($rule = $rule->getNext()) {
-                            if(! $rule->validate($field, $data[$field])) {
-                                $this->setMessage($rule->getMessage());
-                                break;
-                            }
-                        }
+            return $this;
+        }
+
+        /**
+         * @param Rule[] $rules
+         * @return $this
+         */
+        protected function validateRecursive(array $rules = [])
+        {
+            foreach($rules as $rule) {
+                if(! $rule->validate($this->getDataByKey($rule->getField()))) {
+                    $this->appendMessage($rule->getMessage());
+                    break;
+                } else {
+                    if($rule->hasRules()) {
+                        $this->validateRecursive($rule->getRules());
                     }
                 }
             }
 
             return $this;
+        }
+
+        /**
+         * @param $key
+         * @param null $default
+         * @return null
+         */
+        public function getDataByKey($key, $default = null)
+        {
+            return isset($this->data[$key]) ? $this->data[$key] : $default;
         }
 
         /**
@@ -52,12 +72,14 @@
         }
 
         /**
+         * @param string $field
          * @param Rule $rule
          * @return Rule
          */
-        public function add(Rule $rule)
+        public function add($field = null, Rule $rule)
         {
-            $this->rules[$rule->getField()][]   = $rule;
+            $rule->setField($field);
+            $this->rules[$field][]   = $rule;
             return $rule;
         }
 
@@ -86,19 +108,6 @@
         public function setRule(Rule $rule)
         {
             $this->rules[$rule->getField()][]   = $rule;
-            return $this;
-        }
-
-        /**
-         * @param Rule[][] $rules
-         * @return $this
-         */
-        public function setRules(array $rules = [])
-        {
-            if(count($rules) > 0) foreach($rules as $rule) {
-                $this->setRule($rule);
-            }
-
             return $this;
         }
 
@@ -132,7 +141,7 @@
          * @param Message $message
          * @return $this
          */
-        public function setMessage(Message $message)
+        public function appendMessage(Message $message)
         {
             $this->messages[$message->getField()][]     = $message;
             return $this;

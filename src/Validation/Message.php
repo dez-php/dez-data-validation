@@ -59,9 +59,7 @@
          */
         function jsonSerialize()
         {
-            return [
-                'message'   => $this->getMessage()
-            ];
+            return $this->getMessage();
         }
 
     }

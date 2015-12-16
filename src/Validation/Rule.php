@@ -11,20 +11,15 @@
 
         protected $options  = [];
 
-        protected $next     = null;
+        protected $rules    = [];
 
         /**
          * Rule constructor.
-         * @param string $field
          * @param array $options
          */
-        public function __construct($field = null, array $options = [])
+        public function __construct(array $options = [])
         {
-            $this->setField($field)->setOptions($options);
-
-            if($this->hasOption('message')) {
-                $this->setMessage(new Message($this->getField(), $this->getOption('message')));
-            }
+            $this->setOptions($options);
         }
 
         /**
@@ -32,6 +27,10 @@
          */
         public function getMessage()
         {
+            if($this->hasOption('message')) {
+                $this->setMessage(new Message($this->getField(), $this->getOption('message')));
+            }
+
             return $this->message;
         }
 
@@ -101,28 +100,28 @@
         /**
          * @return bool
          */
-        public function hasNext()
+        public function hasRules()
         {
-            return (null !== $this->next && $this->next instanceof static);
+            return count($this->rules) > 0;
         }
 
         /**
          * @return static
          */
-        public function getNext()
+        public function getRules()
         {
-            return $this->next;
+            return $this->rules;
         }
 
 
         /**
-         * @param Rule $next
+         * @param Rule $rule
          * @return $this
          */
-        public function add(Rule $next)
+        public function add(Rule $rule)
         {
-            $this->next = $next;
-            return $next;
+            $this->rules[] = $rule->setField($this->getField());
+            return $rule;
         }
 
         /**
@@ -143,6 +142,6 @@
             return $this;
         }
 
-        abstract public function validate($field, $value);
+        abstract public function validate($value);
 
     }

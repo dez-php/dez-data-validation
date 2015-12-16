@@ -6,9 +6,10 @@
 
     class MinMaxString extends Rule {
 
-        public function validate($field, $value)
+        public function validate($value)
         {
-            return true;
+            echo $this->getField() . ' => ' . $this->getMessage()->getMessage() . "<br>\n";
+            return (bool) rand(0, 1);
         }
 
     }
