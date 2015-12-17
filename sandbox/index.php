@@ -9,13 +9,39 @@ error_reporting(1); ini_set('display_errors', 1);
 
 include_once '../vendor/autoload.php';
 
-$validation = new Validation($_POST);
+$validation = new Validation($_GET);
+
+$rules  = [
+
+];
 
 $validation->add('test', new MinMaxString([
     'message'   => 'l1 1',
     'min'       => 5,
     'max'       => 32,
+    'returnValue'   => false,
 ]));
+
+
+$validation->add('email', new MinMaxString([
+    'message'   => 'l1 1',
+    'min'       => 5,
+    'max'       => 32,
+]));
+
+$validation->add('passwd', new MinMaxString([
+    'message'   => 'l1 1',
+    'min'       => 5,
+    'max'       => 32,
+    'same_with'   => 'repeat_passwd1',
+]));
+
+$validation->add('repeat', new MinMaxString([
+    'message'   => 'l1 1',
+    'min'       => 5,
+    'max'       => 32,
+]));
+
 
 $rule   = $validation->add('test2', new MinMaxString([
     'message'   => 'l1 2',
@@ -31,6 +57,7 @@ $rule->add(new MinMaxString([
     'message'   => '-- -- mess 1',
     'min'       => 5,
     'max'       => 32,
+    'returnValue'   => false,
 ]));
 
 $rule->add(new MinMaxString([
@@ -39,8 +66,11 @@ $rule->add(new MinMaxString([
     'max'       => 32,
 ]));
 
+$validation->add('lalala', $rule);
+
 $validation->validate();
 
 var_dump(
-    json_encode($validation->getMessages(), JSON_PRETTY_PRINT)
+    $validation
+//    json_encode($validation->getMessages(), JSON_PRETTY_PRINT)
 );

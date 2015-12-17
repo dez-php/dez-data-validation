@@ -9,9 +9,11 @@
 
         protected $message;
 
-        protected $options  = [];
+        protected $options = [];
 
-        protected $rules    = [];
+        protected $rules = [];
+
+        protected $dataCollection = null;
 
         /**
          * Rule constructor.
@@ -27,7 +29,7 @@
          */
         public function getMessage()
         {
-            if($this->hasOption('message')) {
+            if ($this->hasOption('message')) {
                 $this->setMessage(new Message($this->getField(), $this->getOption('message')));
             }
 
@@ -106,7 +108,7 @@
         }
 
         /**
-         * @return static
+         * @return Rule[]
          */
         public function getRules()
         {
@@ -120,7 +122,7 @@
          */
         public function add(Rule $rule)
         {
-            $this->rules[] = $rule->setField($this->getField());
+            $this->rules[] = $rule->setField($this->getField())->setDataCollection($this->getDataCollection());
             return $rule;
         }
 
@@ -142,6 +144,36 @@
             return $this;
         }
 
-        abstract public function validate($value);
+        /**
+         * @return DataCollection
+         */
+        public function getDataCollection()
+        {
+            return $this->dataCollection;
+        }
+
+        /**
+         * @param DataCollection $dataCollection
+         * @return $this
+         */
+        public function setDataCollection(DataCollection $dataCollection)
+        {
+            $this->dataCollection = $dataCollection;
+            return $this;
+        }
+
+        /**
+         * @param null $default
+         * @return mixed
+         */
+        public function getValue($default = null)
+        {
+            return $this->getDataCollection()->get($this->getField(), $default);
+        }
+
+        /**
+         * @return mixed
+         */
+        abstract public function validate();
 
     }

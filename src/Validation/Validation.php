@@ -8,7 +8,9 @@
 
         protected $rules    = [];
 
-        protected $data     = [];
+        protected $dataCollection;
+
+        protected $failure  = false;
 
         /**
          * Validation constructor.
@@ -16,7 +18,7 @@
          */
         public function __construct(array $data = [])
         {
-            $this->setData($data);
+            $this->setDataCollection(new DataCollection($data));
         }
 
         /**
@@ -28,46 +30,42 @@
                 $this->validateRecursive($rules);
             }
 
-            return $this;
+            return ! $this->isFailure();
         }
 
         /**
          * @param Rule[] $rules
-         * @return $this
+         * @return bool
          */
         protected function validateRecursive(array $rules = [])
         {
             foreach($rules as $rule) {
-                if(! $rule->validate($this->getDataByKey($rule->getField()))) {
-                    $this->appendMessage($rule->getMessage());
-                    break;
-                } else {
-                    if($rule->hasRules()) {
-                        $this->validateRecursive($rule->getRules());
-                    }
+                if(! $rule->validate()) {
+                    $this->appendMessage($rule->getMessage())->setFailure(true);
+                    return false;
+                } else if ($rule->hasRules() && ! $this->validateRecursive($rule->getRules())) {
+                    return false;
                 }
             }
 
-            return $this;
+            return true;
         }
 
         /**
-         * @param $key
-         * @param null $default
-         * @return null
+         * @return DataCollection
          */
-        public function getDataByKey($key, $default = null)
+        public function getDataCollection()
         {
-            return isset($this->data[$key]) ? $this->data[$key] : $default;
+            return $this->dataCollection;
         }
 
         /**
-         * @param array $data
-         * @return static
+         * @param DataCollection $dataCollection
+         * @return $this
          */
-        public function setData(array $data = [])
+        public function setDataCollection(DataCollection $dataCollection)
         {
-            $this->data = $data;
+            $this->dataCollection = $dataCollection;
             return $this;
         }
 
@@ -78,7 +76,7 @@
          */
         public function add($field = null, Rule $rule)
         {
-            $rule->setField($field);
+            $rule->setField($field)->setDataCollection($this->getDataCollection());
             $this->rules[$field][]   = $rule;
             return $rule;
         }
@@ -162,6 +160,24 @@
         public function setMessages($messages)
         {
             $this->messages = $messages;
+            return $this;
+        }
+
+        /**
+         * @return boolean
+         */
+        public function isFailure()
+        {
+            return $this->failure;
+        }
+
+        /**
+         * @param boolean $failure
+         * @return $this
+         */
+        public function setFailure($failure)
+        {
+            $this->failure = $failure;
             return $this;
         }
 
