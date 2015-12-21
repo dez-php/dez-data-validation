@@ -6,9 +6,11 @@
 
     class MinMaxString extends Rule {
 
-        public function validate($field, $value)
+        public function validate()
         {
-            return true;
+            $state  = $this->getOption('returnValue', true);
+            echo ($state?'OK':'FAIL').' '.$this->getField() . ' => ' . $this->getValue() . ':' . $this->getMessage()->getMessage() . "<br>\n";
+            return (bool) $state;
         }
 
     }

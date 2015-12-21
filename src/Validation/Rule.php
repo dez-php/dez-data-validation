@@ -9,22 +9,19 @@
 
         protected $message;
 
-        protected $options  = [];
+        protected $options = [];
 
-        protected $next     = null;
+        protected $rules = [];
+
+        protected $dataCollection = null;
 
         /**
          * Rule constructor.
-         * @param string $field
          * @param array $options
          */
-        public function __construct($field = null, array $options = [])
+        public function __construct(array $options = [])
         {
-            $this->setField($field)->setOptions($options);
-
-            if($this->hasOption('message')) {
-                $this->setMessage(new Message($this->getField(), $this->getOption('message')));
-            }
+            $this->setOptions($options);
         }
 
         /**
@@ -32,6 +29,10 @@
          */
         public function getMessage()
         {
+            if ($this->hasOption('message')) {
+                $this->setMessage(new Message($this->getField(), $this->getOption('message')));
+            }
+
             return $this->message;
         }
 
@@ -101,28 +102,28 @@
         /**
          * @return bool
          */
-        public function hasNext()
+        public function hasRules()
         {
-            return (null !== $this->next && $this->next instanceof static);
+            return count($this->rules) > 0;
         }
 
         /**
-         * @return static
+         * @return Rule[]
          */
-        public function getNext()
+        public function getRules()
         {
-            return $this->next;
+            return $this->rules;
         }
 
 
         /**
-         * @param Rule $next
+         * @param Rule $rule
          * @return $this
          */
-        public function add(Rule $next)
+        public function add(Rule $rule)
         {
-            $this->next = $next;
-            return $next;
+            $this->rules[] = $rule->setField($this->getField())->setDataCollection($this->getDataCollection());
+            return $rule;
         }
 
         /**
@@ -143,6 +144,36 @@
             return $this;
         }
 
-        abstract public function validate($field, $value);
+        /**
+         * @return DataCollection
+         */
+        public function getDataCollection()
+        {
+            return $this->dataCollection;
+        }
+
+        /**
+         * @param DataCollection $dataCollection
+         * @return $this
+         */
+        public function setDataCollection(DataCollection $dataCollection)
+        {
+            $this->dataCollection = $dataCollection;
+            return $this;
+        }
+
+        /**
+         * @param null $default
+         * @return mixed
+         */
+        public function getValue($default = null)
+        {
+            return $this->getDataCollection()->get($this->getField(), $default);
+        }
+
+        /**
+         * @return mixed
+         */
+        abstract public function validate();
 
     }

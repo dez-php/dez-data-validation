@@ -8,7 +8,9 @@
 
         protected $rules    = [];
 
-        protected $data     = [];
+        protected $dataCollection;
+
+        protected $failure  = false;
 
         /**
          * Validation constructor.
@@ -16,17 +18,26 @@
          */
         public function __construct(array $data = [])
         {
-            $this->setData($data);
+            $this->setDataCollection(new DataCollection($data));
         }
 
         /**
+<<<<<<< HEAD
          * @param array $keys
          * @return $this
          */
         public function validate(array $keys = [])
+=======
+         * @return $this
+         */
+        public function validate()
+>>>>>>> bd7107409fa3de9b364de197f5a022a8ac11a822
         {
-            $data   = count($keys) > 0 ? array_diff($this->data, array_flip($keys)) : $this->data;
+            foreach($this->getRules() as $rules) {
+                $this->validateRecursive($rules);
+            }
 
+<<<<<<< HEAD
             /*foreach($this->getRules() as $field => $rules) {
                 foreach($rules as $rule) {
                     if(! $rule->validate($field, $data[$field])) {
@@ -39,29 +50,61 @@
                             }
                         }
                     }
+=======
+            return ! $this->isFailure();
+        }
+
+        /**
+         * @param Rule[] $rules
+         * @return bool
+         */
+        protected function validateRecursive(array $rules = [])
+        {
+            foreach($rules as $rule) {
+                if(! $rule->validate()) {
+                    $this->appendMessage($rule->getMessage())->setFailure(true);
+                    return false;
+                } else if ($rule->hasRules() && ! $this->validateRecursive($rule->getRules())) {
+                    return false;
+>>>>>>> bd7107409fa3de9b364de197f5a022a8ac11a822
                 }
             }*/
 
-            return $this;
+            return true;
         }
 
         /**
-         * @param array $data
-         * @return static
+         * @return DataCollection
          */
-        public function setData(array $data = [])
+        public function getDataCollection()
         {
-            $this->data = $data;
+            return $this->dataCollection;
+        }
+
+        /**
+         * @param DataCollection $dataCollection
+         * @return $this
+         */
+        public function setDataCollection(DataCollection $dataCollection)
+        {
+            $this->dataCollection = $dataCollection;
             return $this;
         }
 
         /**
+         * @param string $field
          * @param Rule $rule
          * @return Rule
          */
-        public function add(Rule $rule)
+        public function add($field = null, Rule $rule)
         {
+<<<<<<< HEAD
             return $this->appendRule($rule);
+=======
+            $rule->setField($field)->setDataCollection($this->getDataCollection());
+            $this->rules[$field][]   = $rule;
+            return $rule;
+>>>>>>> bd7107409fa3de9b364de197f5a022a8ac11a822
         }
 
         /**
@@ -88,7 +131,11 @@
          */
         public function appendRule(Rule $rule)
         {
+<<<<<<< HEAD
             $this->rules[$rule->getField()][]     = $rule;
+=======
+            $this->rules[$rule->getField()][]   = $rule;
+>>>>>>> bd7107409fa3de9b364de197f5a022a8ac11a822
             return $this;
         }
 
@@ -143,6 +190,24 @@
         public function setMessages($messages)
         {
             $this->messages = $messages;
+            return $this;
+        }
+
+        /**
+         * @return boolean
+         */
+        public function isFailure()
+        {
+            return $this->failure;
+        }
+
+        /**
+         * @param boolean $failure
+         * @return $this
+         */
+        public function setFailure($failure)
+        {
+            $this->failure = $failure;
             return $this;
         }
 
