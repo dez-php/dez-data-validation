@@ -22,35 +22,14 @@
         }
 
         /**
-<<<<<<< HEAD
          * @param array $keys
          * @return $this
          */
         public function validate(array $keys = [])
-=======
-         * @return $this
-         */
-        public function validate()
->>>>>>> bd7107409fa3de9b364de197f5a022a8ac11a822
         {
             foreach($this->getRules() as $rules) {
                 $this->validateRecursive($rules);
             }
-
-<<<<<<< HEAD
-            /*foreach($this->getRules() as $field => $rules) {
-                foreach($rules as $rule) {
-                    if(! $rule->validate($field, $data[$field])) {
-                        $this->setMessage($rule->getMessage());
-                    } else {
-                        while($rule = $rule->getNext()) {
-                            if(! $rule->validate($field, $data[$field])) {
-                                $this->setMessage($rule->getMessage());
-                                break;
-                            }
-                        }
-                    }
-=======
             return ! $this->isFailure();
         }
 
@@ -66,9 +45,8 @@
                     return false;
                 } else if ($rule->hasRules() && ! $this->validateRecursive($rule->getRules())) {
                     return false;
->>>>>>> bd7107409fa3de9b364de197f5a022a8ac11a822
                 }
-            }*/
+            }
 
             return true;
         }
@@ -98,13 +76,9 @@
          */
         public function add($field = null, Rule $rule)
         {
-<<<<<<< HEAD
-            return $this->appendRule($rule);
-=======
             $rule->setField($field)->setDataCollection($this->getDataCollection());
             $this->rules[$field][]   = $rule;
             return $rule;
->>>>>>> bd7107409fa3de9b364de197f5a022a8ac11a822
         }
 
         /**
@@ -131,11 +105,7 @@
          */
         public function appendRule(Rule $rule)
         {
-<<<<<<< HEAD
             $this->rules[$rule->getField()][]     = $rule;
-=======
-            $this->rules[$rule->getField()][]   = $rule;
->>>>>>> bd7107409fa3de9b364de197f5a022a8ac11a822
             return $this;
         }
 
