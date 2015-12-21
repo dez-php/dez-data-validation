@@ -2,11 +2,15 @@
 
     namespace Dez\Validation;
 
-    class RulesTree {
+    class RuleContainer {
 
-        public function __construct()
+        protected $rule     = null;
+
+        protected $next     = null;
+
+        public function __construct(Rule $rule)
         {
-
+            $this->rule     = $rule;
         }
 
     }

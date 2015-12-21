@@ -19,11 +19,15 @@
             $this->setData($data);
         }
 
+        /**
+         * @param array $keys
+         * @return $this
+         */
         public function validate(array $keys = [])
         {
             $data   = count($keys) > 0 ? array_diff($this->data, array_flip($keys)) : $this->data;
 
-            foreach($this->getRules() as $field => $rules) {
+            /*foreach($this->getRules() as $field => $rules) {
                 foreach($rules as $rule) {
                     if(! $rule->validate($field, $data[$field])) {
                         $this->setMessage($rule->getMessage());
@@ -36,7 +40,7 @@
                         }
                     }
                 }
-            }
+            }*/
 
             return $this;
         }
@@ -57,8 +61,7 @@
          */
         public function add(Rule $rule)
         {
-            $this->rules[$rule->getField()][]   = $rule;
-            return $rule;
+            return $this->appendRule($rule);
         }
 
         /**
@@ -83,22 +86,9 @@
          * @param Rule $rule
          * @return $this
          */
-        public function setRule(Rule $rule)
+        public function appendRule(Rule $rule)
         {
-            $this->rules[$rule->getField()][]   = $rule;
-            return $this;
-        }
-
-        /**
-         * @param Rule[][] $rules
-         * @return $this
-         */
-        public function setRules(array $rules = [])
-        {
-            if(count($rules) > 0) foreach($rules as $rule) {
-                $this->setRule($rule);
-            }
-
+            $this->rules[$rule->getField()][]     = $rule;
             return $this;
         }
 
@@ -132,7 +122,7 @@
          * @param Message $message
          * @return $this
          */
-        public function setMessage(Message $message)
+        public function appendMessage(Message $message)
         {
             $this->messages[$message->getField()][]     = $message;
             return $this;

@@ -19,31 +19,6 @@ $validation
 
 ;
 
-$rule   = $validation
-
-
-    ->add(new MinMaxString('test', [
-    'message'   => 'Bad...',
-    'min'       => 5,
-    'max'       => 32,
-]))
-    ->add(new MinMaxString('test', [
-    'message'   => 'Bad...',
-    'min'       => 5,
-    'max'       => 32,
-]))
-    ->add(new MinMaxString('test', [
-    'message'   => 'Depth 2',
-    'min'       => 5,
-    'max'       => 32,
-]))
-    ->add(new MinMaxString('test', [
-    'message'   => '123123123aasd asd as dasd.',
-    'min'       => 5,
-    'max'       => 32,
-]));
-
-
 $validation
 
     ->add(new MinMaxString('test', [
