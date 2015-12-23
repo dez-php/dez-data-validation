@@ -2,6 +2,8 @@
 
     namespace Dez\Validation;
 
+    use Dez\Validation\Rules\Required;
+
     class Validation implements \JsonSerializable {
 
         protected $messages = [];
@@ -22,29 +24,28 @@
         }
 
         /**
-         * @param array $keys
-         * @return $this
+         * @return bool
          */
-        public function validate(array $keys = [])
+        public function validate()
         {
-            foreach($this->getRules() as $rules) {
-                $this->validateRecursive($rules);
+            foreach($this->getRules() as $field => $rules) {
+                $this->validateRecursive($rules, $field);
             }
             return ! $this->isFailure();
         }
 
         /**
          * @param Rule[] $rules
+         * @param null $field
          * @return bool
          */
-        protected function validateRecursive(array $rules = [])
+        protected function validateRecursive(array $rules = [], $field = null)
         {
             foreach($rules as $rule) {
-                if(! $rule->validate()) {
-                    $this->appendMessage($rule->getMessage())->setFailure(true);
-                    return false;
-                } else if ($rule->hasRules() && ! $this->validateRecursive($rule->getRules())) {
-                    return false;
+                if($rule->validate($field, $this) && $rule->hasRules()) {
+                    $this->validateRecursive($rule->getRules(), $field);
+                } else {
+                    $this->setFailure(true);
                 }
             }
 
@@ -76,9 +77,85 @@
          */
         public function add($field = null, Rule $rule)
         {
-            $rule->setField($field)->setDataCollection($this->getDataCollection());
-            $this->rules[$field][]   = $rule;
+            return $this->append($field, $rule);
+        }
+
+        /**
+         * @param null $field
+         * @param Rule $rule
+         * @return Rule
+         */
+        public function rule($field = null, Rule $rule)
+        {
+            return $this->add($field, $rule);
+        }
+
+        /**
+         * @param null $field
+         * @param Rule $rule
+         * @return Rule
+         */
+        public function append($field = null, Rule $rule)
+        {
+            $rule   = $this->prepare($rule);
+            $this->rules[$field][]   = $this->prepare($rule);
             return $rule;
+        }
+
+        /**
+         * @param null $field
+         * @param Rule $rule
+         * @return Rule
+         */
+        public function prepend($field = null, Rule $rule)
+        {
+            if(! is_array($this->rules[$field])) {
+                $this->rules[$field]    = [];
+            }
+
+            $rule   = $this->prepare($rule);
+            array_unshift($this->rules[$field], $rule);
+
+            return $rule;
+        }
+
+        /**
+         * @param Rule $rule
+         * @return Rule
+         */
+        public function prepare(Rule $rule)
+        {
+            return $rule->setDataCollection($this->getDataCollection());
+        }
+
+        /**
+         * @param null $field
+         * @param null $message
+         * @return Required
+         */
+        public function required($field = null, $message = null)
+        {
+            $required   = $this->prepend($field, new Required());
+
+            if(null !== $message) {
+                $required->setOption('message', $message);
+            }
+
+            return $required;
+        }
+
+        /**
+         * @param $origin
+         * @param $target
+         * @return $this
+         */
+        public function cloneTo($origin, $target)
+        {
+            if($this->hasRule($origin)) {
+                $this->rules[$target]    = $this->getRules($origin);
+            }
+
+            return $this;
         }
 
         /**
@@ -94,27 +171,9 @@
          * @param $field
          * @return null
          */
-        public function getRule($field)
+        public function getRules($field = null)
         {
-            return $this->hasRule($field) ? $this->rules[$field] : null;
-        }
-
-        /**
-         * @param Rule $rule
-         * @return $this
-         */
-        public function appendRule(Rule $rule)
-        {
-            $this->rules[$rule->getField()][]     = $rule;
-            return $this;
-        }
-
-        /**
-         * @return Rule[][]
-         */
-        public function getRules()
-        {
-            return $this->rules;
+            return $this->hasRule($field) ? $this->rules[$field] : $this->rules;
         }
 
         /**
