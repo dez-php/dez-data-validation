@@ -3,7 +3,11 @@
 namespace Abc;
 
 use Dez\Validation\Rules\Email;
+use Dez\Validation\Rules\Hexadecimal;
+use Dez\Validation\Rules\Identical;
+use Dez\Validation\Rules\IP;
 use Dez\Validation\Rules\StringLength;
+use Dez\Validation\Rules\Url;
 use Dez\Validation\Validation;
 
 error_reporting(1); ini_set('display_errors', 1);
@@ -30,6 +34,20 @@ $email = $validation->required('email', 'NOOOO!!!1 :field required!!!!');
 
 $email
     ->add(new Email());
+
+$email
+    ->add(new Url());
+
+$email
+    ->add(new IP());
+
+$email
+    ->add(new Hexadecimal());
+
+$email
+    ->add(new Identical([
+        'accepted'  => 'YES'
+    ]));
 
 /// echo validation result
 if(! $validation->validate()) {
