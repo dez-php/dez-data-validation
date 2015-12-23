@@ -42,10 +42,7 @@ $email
     ->add(new IP());
 
 $email
-    ->add(new Hexadecimal());
-
-$email
-    ->add(new Identical([
+    ->add(new Hexadecimal())->add(new Identical([
         'accepted'  => 'YES'
     ]));
 

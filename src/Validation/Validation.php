@@ -31,6 +31,7 @@
             foreach($this->getRules() as $field => $rules) {
                 $this->validateRecursive($rules, $field);
             }
+
             return ! $this->isFailure();
         }
 
