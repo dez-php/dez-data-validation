@@ -2,6 +2,8 @@
 
 namespace Abc;
 
+use Dez\Validation\Rules\Age;
+use Dez\Validation\Rules\Email;
 use Dez\Validation\Rules\MinMaxString;
 use Dez\Validation\Validation;
 
@@ -15,36 +17,8 @@ $rules  = [
 
 ];
 
-$validation->add('test', new MinMaxString([
-    'message'   => 'l1 1',
-    'min'       => 5,
-    'max'       => 32,
-    'returnValue'   => false,
-]));
-
-
-$validation->add('email', new MinMaxString([
-    'message'   => 'l1 1',
-    'min'       => 5,
-    'max'       => 32,
-]));
-
-$validation->add('passwd', new MinMaxString([
-    'message'   => 'l1 1',
-    'min'       => 5,
-    'max'       => 32,
-    'same_with'   => 'repeat_passwd1',
-]));
-
-$validation->add('repeat', new MinMaxString([
-    'message'   => 'l1 1',
-    'min'       => 5,
-    'max'       => 32,
-]));
-
-
-$rule   = $validation->add('test2', new MinMaxString([
-    'message'   => 'l1 2',
+$rule   = $validation->add('test2', new Age([
+    'message'   => '-- -- -- -- mess 1',
     'min'       => 5,
     'max'       => 32,
 ]));
@@ -57,6 +31,23 @@ $rule->add(new MinMaxString([
     'message'   => '-- -- mess 1',
     'min'       => 5,
     'max'       => 32,
+]))->add(new MinMaxString([
+    'message'   => '-- -- -- mess 1',
+    'min'       => 5,
+    'max'       => 32,
+    'returnValue'   => false,
+]))->add(new Age([
+    'message'   => '-- -- -- -- mess 1',
+    'min'       => 5,
+    'max'       => 32,
+]))->add(new Email([
+    'message'   => 'email bad',
+    'min'       => 5,
+    'max'       => 32,
+]))->add(new MinMaxString([
+    'message'   => '-- -- -- -- -- -- mess 1',
+    'min'       => 5,
+    'max'       => 32,
     'returnValue'   => false,
 ]));
 
@@ -66,11 +57,14 @@ $rule->add(new MinMaxString([
     'max'       => 32,
 ]));
 
-$validation->add('lalala', $rule);
+$rule->add(new MinMaxString([
+    'message'   => 'last check',
+    'min'       => 5,
+    'max'       => 32,
+]));
 
 $validation->validate();
 
 var_dump(
-    $validation
-//    json_encode($validation->getMessages(), JSON_PRETTY_PRINT)
+    json_encode($validation->getMessages(), JSON_PRETTY_PRINT)
 );

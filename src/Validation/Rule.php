@@ -29,9 +29,7 @@
          */
         public function getMessage()
         {
-            if ($this->hasOption('message')) {
-                $this->setMessage(new Message($this->getField(), $this->getOption('message')));
-            }
+            $this->setMessage(new Message($this->getField(), $this->getOption('message')));
 
             return $this->message;
         }

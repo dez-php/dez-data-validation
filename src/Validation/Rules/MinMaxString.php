@@ -4,13 +4,27 @@
 
     use Dez\Validation\Rule;
 
+    /**
+     * Class MinMaxString
+     * @package Dez\Validation\Rules
+     */
     class MinMaxString extends Rule {
 
+        /**
+         * @return bool
+         */
         public function validate()
         {
-            $state  = $this->getOption('returnValue', true);
-            echo ($state?'OK':'FAIL').' '.$this->getField() . ' => ' . $this->getValue() . ':' . $this->getMessage()->getMessage() . "<br>\n";
-            return (bool) $state;
+            $min  = $this->getOption('min', 1);
+            $max  = $this->getOption('max', PHP_INT_MAX - 1);
+
+            $stringLength   = mb_strlen($this->getValue());
+
+            if($min > $stringLength || $max < $stringLength){
+                return false;
+            }
+
+            return true;
         }
 
     }

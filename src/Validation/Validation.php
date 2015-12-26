@@ -42,9 +42,8 @@
             foreach($rules as $rule) {
                 if(! $rule->validate()) {
                     $this->appendMessage($rule->getMessage())->setFailure(true);
-                    return false;
-                } else if ($rule->hasRules() && ! $this->validateRecursive($rule->getRules())) {
-                    return false;
+                } else if ($rule->hasRules()) {
+                    $this->validateRecursive($rule->getRules());
                 }
             }
 
