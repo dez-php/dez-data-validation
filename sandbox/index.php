@@ -2,9 +2,13 @@
 
 namespace Abc;
 
-use Dez\Validation\Rules\Age;
 use Dez\Validation\Rules\Email;
-use Dez\Validation\Rules\MinMaxString;
+use Dez\Validation\Rules\Hexadecimal;
+use Dez\Validation\Rules\Identical;
+use Dez\Validation\Rules\IP;
+use Dez\Validation\Rules\Similarity;
+use Dez\Validation\Rules\StringLength;
+use Dez\Validation\Rules\Url;
 use Dez\Validation\Validation;
 
 error_reporting(1); ini_set('display_errors', 1);
@@ -13,58 +17,56 @@ include_once '../vendor/autoload.php';
 
 $validation = new Validation($_GET);
 
-$rules  = [
-
-];
-
-$rule   = $validation->add('test2', new Age([
-    'message'   => '-- -- -- -- mess 1',
-    'min'       => 5,
-    'max'       => 32,
+$rule = $validation->required('name')->add(new StringLength([
+    'min'       => 3,
+    'max'       => 64
 ]));
 
-$rule->add(new MinMaxString([
-    'message'   => '-- mess 1',
-    'min'       => 5,
-    'max'       => 32,
-]))->add(new MinMaxString([
-    'message'   => '-- -- mess 1',
-    'min'       => 5,
-    'max'       => 32,
-]))->add(new MinMaxString([
-    'message'   => '-- -- -- mess 1',
-    'min'       => 5,
-    'max'       => 32,
-    'returnValue'   => false,
-]))->add(new Age([
-    'message'   => '-- -- -- -- mess 1',
-    'min'       => 5,
-    'max'       => 32,
-]))->add(new Email([
-    'message'   => 'email bad',
-    'min'       => 5,
-    'max'       => 32,
-]))->add(new MinMaxString([
-    'message'   => '-- -- -- -- -- -- mess 1',
-    'min'       => 5,
-    'max'       => 32,
-    'returnValue'   => false,
-]));
+$validation->email('email');
 
-$rule->add(new MinMaxString([
-    'message'   => '-- mess 2',
-    'min'       => 5,
-    'max'       => 32,
-]));
+$validation->password('passwd', 'repeat_passwd');
 
-$rule->add(new MinMaxString([
-    'message'   => 'last check',
-    'min'       => 5,
-    'max'       => 32,
-]));
+$betweenRule    = new StringLength([
+    'message'   => 'between :min and :max @ :field',
+    'min'       => 16,
+    'max'       => 64
+]);
 
-$validation->validate();
+$rule->add($betweenRule);
 
-var_dump(
-    json_encode($validation->getMessages(), JSON_PRETTY_PRINT)
-);
+$validation->cloneTo('name', 'name_hash');
+$email = $validation->required('email', 'NOOOO!!!1 :field required!!!!');
+
+$email
+    ->add(new Similarity([
+        'comparable'    => 'repeat_email'
+    ]));
+
+$email
+    ->add(new Email());
+
+$email
+    ->add(new Url());
+
+$email
+    ->add(new IP());
+
+$email
+    ->add(new Hexadecimal())->add(new Identical([
+        'accepted'  => 'YES'
+    ]));
+
+/// echo validation result
+if(! $validation->validate()) {
+    var_dump($validation->getMessages());
+    foreach($validation->getMessages() as $field => $messages) {
+        echo $field . '<br>';
+
+
+        foreach($messages as $message) {
+            echo "  &bull; {$message->getMessage()}<br>";
+        }
+    }
+} else {
+    echo 'all ok';
+}

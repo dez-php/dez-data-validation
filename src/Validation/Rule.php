@@ -5,10 +5,6 @@
     abstract class Rule
     {
 
-        protected $field;
-
-        protected $message;
-
         protected $options = [];
 
         protected $rules = [];
@@ -22,26 +18,6 @@
         public function __construct(array $options = [])
         {
             $this->setOptions($options);
-        }
-
-        /**
-         * @return Message
-         */
-        public function getMessage()
-        {
-            $this->setMessage(new Message($this->getField(), $this->getOption('message')));
-
-            return $this->message;
-        }
-
-        /**
-         * @param Message $message
-         * @return static
-         */
-        public function setMessage(Message $message)
-        {
-            $this->message = $message;
-            return $this;
         }
 
         /**
@@ -113,33 +89,14 @@
             return $this->rules;
         }
 
-
         /**
          * @param Rule $rule
          * @return $this
          */
         public function add(Rule $rule)
         {
-            $this->rules[] = $rule->setField($this->getField())->setDataCollection($this->getDataCollection());
+            $this->rules[] = $rule->setDataCollection($this->getDataCollection());
             return $rule;
-        }
-
-        /**
-         * @return mixed
-         */
-        public function getField()
-        {
-            return $this->field;
-        }
-
-        /**
-         * @param mixed $field
-         * @return static
-         */
-        public function setField($field)
-        {
-            $this->field = $field;
-            return $this;
         }
 
         /**
@@ -160,18 +117,27 @@
             return $this;
         }
 
+
         /**
+         * @param null $field
          * @param null $default
-         * @return mixed
+         * @return null
          */
-        public function getValue($default = null)
+        public function getValue($field = null, $default = null)
         {
-            return $this->getDataCollection()->get($this->getField(), $default);
+            return $this->getDataCollection()->get($field, $default);
         }
 
         /**
-         * @return mixed
+         * @param null $field
+         * @param Validation $validation
+         * @return bool
          */
-        abstract public function validate();
+        abstract public function validate($field = null, Validation $validation);
+
+        /**
+         * @return string
+         */
+        abstract public function getDefaultMessage();
 
     }

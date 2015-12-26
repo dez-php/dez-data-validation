@@ -3,17 +3,17 @@
     namespace Dez\Validation\Rules;
 
     /**
-     * Class Email
+     * Class Url
      * @package Dez\Validation\Rules
      */
-    class Email extends AbstractFilterVar {
+    class Url extends AbstractFilterVar {
 
         /**
          * @return string
          */
         public function getDefaultMessage()
         {
-            return 'Value of :field is not a valid email address';
+            return 'Value of :field is not a valid URL address';
         }
 
         /**
@@ -21,7 +21,7 @@
          */
         protected function getFlag()
         {
-            return FILTER_VALIDATE_EMAIL;
+            return FILTER_VALIDATE_URL;
         }
 
     }

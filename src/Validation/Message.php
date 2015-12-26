@@ -8,14 +8,17 @@
 
         protected $message;
 
+        protected $replacePairs = [];
+
         /**
          * Message constructor.
          * @param null $field
          * @param null $message
+         * @param array $replacePairs
          */
-        public function __construct($field = null, $message = null)
+        public function __construct($field = null, $message = null, array $replacePairs = [])
         {
-            $this->setField($field)->setMessage($message);
+            $this->setField($field)->setReplacePairs($replacePairs)->setMessage($message);
         }
 
         /**
@@ -50,7 +53,32 @@
          */
         public function setMessage($message)
         {
-            $this->message = $message;
+            $this->message = strtr($message, $this->getReplacePairs());
+            return $this;
+        }
+
+        /**
+         * @return array
+         */
+        public function getReplacePairs()
+        {
+            return $this->replacePairs;
+        }
+
+        /**
+         * @param array $replacePairs
+         * @return static
+         */
+        public function setReplacePairs(array $replacePairs = [])
+        {
+            $pairs  = [];
+
+            foreach($replacePairs as $key => $replacement) {
+                $pairs[":{$key}"]   = $replacement;
+            }
+
+            $this->replacePairs = $pairs;
+
             return $this;
         }
 
