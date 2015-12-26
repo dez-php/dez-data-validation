@@ -113,7 +113,7 @@
          */
         public function prepend($field = null, Rule $rule)
         {
-            if(! is_array($this->rules[$field])) {
+            if(! isset($this->rules[$field])) {
                 $this->rules[$field]    = [];
             }
 
