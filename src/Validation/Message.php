@@ -22,6 +22,22 @@
         }
 
         /**
+         * @return string
+         */
+        function jsonSerialize()
+        {
+            return $this->getMessage();
+        }
+
+        /**
+         * @return string
+         */
+        public function __toString()
+        {
+            return $this->getMessage();
+        }
+
+        /**
          * @return mixed
          */
         public function getField()
@@ -80,14 +96,6 @@
             $this->replacePairs = $pairs;
 
             return $this;
-        }
-
-        /**
-         * @return array
-         */
-        function jsonSerialize()
-        {
-            return $this->getMessage();
         }
 
     }
