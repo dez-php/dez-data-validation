@@ -155,7 +155,7 @@
          */
         public function email($field = null, $message = null)
         {
-            $emailRule   = $this->prepend($field, new Email());
+            $emailRule   = $this->append($field, new Email());
 
             if(null !== $message) {
                 $emailRule->setOption('message', $message);
@@ -172,7 +172,7 @@
          */
         public function password($field = null, $repeatField = null, $message = null)
         {
-            $passwordRule   = $this->prepend($field, new StringLength([
+            $passwordRule   = $this->append($field, new StringLength([
                 'min'   => 6,
                 'max'   => 32,
             ]));
