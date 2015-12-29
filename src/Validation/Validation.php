@@ -42,19 +42,17 @@
         /**
          * @param Rule[] $rules
          * @param null $field
-         * @return bool
+         * @return void
          */
         protected function validateRecursive(array $rules = [], $field = null)
         {
             foreach($rules as $rule) {
-                if($rule->validate($field, $this) && $rule->hasRules()) {
-                    $this->validateRecursive($rule->getRules(), $field);
-                } else {
+                if(! $rule->validate($field, $this)) {
                     $this->setFailure(true);
+                } else if($rule->hasRules() === true) {
+                    $this->validateRecursive($rule->getRules(), $field);
                 }
             }
-
-            return true;
         }
 
         /**
