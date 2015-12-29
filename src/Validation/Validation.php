@@ -3,6 +3,7 @@
     namespace Dez\Validation;
 
     use Dez\Validation\Rules\Email;
+    use Dez\Validation\Rules\Identical;
     use Dez\Validation\Rules\Required;
     use Dez\Validation\Rules\Similarity;
     use Dez\Validation\Rules\StringLength;
@@ -186,6 +187,25 @@
             }
 
             return $passwordRule;
+        }
+
+        /**
+         * @param string $field
+         * @param string $comparableValue
+         * @param string $message
+         * @return Rule
+         */
+        public function identical($field, $comparableValue = null, $message = null)
+        {
+            $identicalRule   = $this->append($field, new Identical([
+                'accepted'    => $comparableValue
+            ]));
+
+            if(null !== $message) {
+                $identicalRule->setOption('message', $message);
+            }
+
+            return $identicalRule;
         }
 
         /**
