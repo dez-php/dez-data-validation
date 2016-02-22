@@ -15,6 +15,14 @@ $passkey
     ->add(new Identical([
         'accepted'  => '12FF'
     ]));
+    
+$passkey->add(new Callback(function($value) {
+   return $value > 1024;
+}, "Wrong passkey"));
+
+$validation->callback('access', function($value){
+    return $value > 2048;
+}, "You do not have permissions");
 
 $validation->validate(); // true|false
 $validation->isFailure();
