@@ -2,6 +2,7 @@
 
     namespace Dez\Validation;
 
+    use Dez\Validation\Rules\Callback;
     use Dez\Validation\Rules\Email;
     use Dez\Validation\Rules\Identical;
     use Dez\Validation\Rules\Required;
@@ -204,6 +205,17 @@
             }
 
             return $identicalRule;
+        }
+
+        /**
+         * @param $field
+         * @param callable $callback
+         * @param null $message
+         * @return Rule
+         */
+        public function callback($field, callable $callback, $message = null)
+        {
+            return $this->append($field, new Callback($callback, $message));
         }
 
         /**

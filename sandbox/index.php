@@ -2,6 +2,8 @@
 
 namespace Abc;
 
+use Dez\Validation\Rule;
+use Dez\Validation\Rules\Callback;
 use Dez\Validation\Rules\Email;
 use Dez\Validation\Rules\Hexadecimal;
 use Dez\Validation\Rules\Identical;
@@ -21,6 +23,11 @@ $rule = $validation->required('name')->add(new StringLength([
     'min'       => 3,
     'max'       => 64
 ]));
+
+$validation->add('test_field123', new Callback(function($value, Rule $rule, Validation $validation){
+    return false;
+}));
+
 
 $validation->email('email');
 
@@ -61,8 +68,6 @@ if(! $validation->validate()) {
     var_dump($validation->getMessages());
     foreach($validation->getMessages() as $field => $messages) {
         echo $field . '<br>';
-
-
         foreach($messages as $message) {
             echo "  &bull; {$message->getMessage()}<br>";
         }
