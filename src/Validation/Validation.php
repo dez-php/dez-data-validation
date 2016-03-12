@@ -177,9 +177,11 @@
                 'max'   => 32,
             ]));
 
-            $passwordRule->add(new Similarity([
-                'comparable'    => $repeatField
-            ]));
+            if($repeatField !== null) {
+                $passwordRule->add(new Similarity([
+                    'comparable'    => $repeatField
+                ]));
+            }
 
             if(null !== $message) {
                 $passwordRule->setOption('message', $message);
