@@ -4,53 +4,9 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e5f9685f039186e6081b02adce063395",
-    "content-hash": "e03dae00ff7bc7a22f4bc996d61ca454",
-    "packages": [
-        {
-            "name": "dez-php/dez-collection",
-            "version": "v1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dez-php/dez-collection.git",
-                "reference": "7f51534e2135a020563d259513bd4592dbf654e7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dez-php/dez-collection/zipball/7f51534e2135a020563d259513bd4592dbf654e7",
-                "reference": "7f51534e2135a020563d259513bd4592dbf654e7",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Dez\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ivan Gontarenko (Dez)",
-                    "email": "vania.gontarenko@gmail.com",
-                    "role": "dev"
-                }
-            ],
-            "description": "Simple PHP Collection Class",
-            "keywords": [
-                "collection",
-                "dez-php collection",
-                "php collection",
-                "simple php collection"
-            ],
-            "time": "2015-09-07 14:33:58"
-        }
-    ],
+    "hash": "7a0cbda66ed931abf7f61ea9f5f00107",
+    "content-hash": "ab21aaf77b7898dfac31d0dfce17dc6b",
+    "packages": [],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "dev",

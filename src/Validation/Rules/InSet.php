@@ -7,10 +7,10 @@ use Dez\Validation\Rule;
 use Dez\Validation\Validation;
 
 /**
- * Class Similarity
+ * Class InSet
  * @package Dez\Validation\Rules
  */
-class Similarity extends Rule
+class InSet extends Rule
 {
 
   /**
@@ -20,14 +20,15 @@ class Similarity extends Rule
    */
   public function validate($field = null, Validation $validation)
   {
+    $set = $this->getOption('set', []);
+    $set = is_array($set) ? $set : [$set];
+
     $value = $this->getValue($field);
-    $comparableField = $this->getOption('comparable', null);
-    $comparable = $this->getDataCollection()->get($comparableField, null);
 
-    if (null === $comparable || $value !== $comparable) {
-
+    if(!in_array($value, $set)) {
       $message = $this->getOption('message', $this->getDefaultMessage());
-      $replacements = ['field' => $field, 'comparable' => $comparableField];
+
+      $replacements = ['field' => $field, 'set' => implode(', ', $set)];
       $validation->appendMessage(new Message($field, $message, $replacements));
 
       return false;
@@ -41,7 +42,7 @@ class Similarity extends Rule
    */
   public function getDefaultMessage()
   {
-    return 'Value :field must be the same as :comparable';
+    return 'Value of field ":field" should be one of (:set)';
   }
 
 }
